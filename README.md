@@ -1,2 +1,2 @@
 # CodeLab
-The purpose of this repository is development
+Türkiye illerini bilgi yarışmasıyla fethetme uygulaması.
