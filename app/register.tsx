@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
 
 export default function RegisterScreen() {
   const [playerName, setPlayerName] = useState('');
@@ -10,6 +16,7 @@ export default function RegisterScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Oyuncu Adınızı Girin</Text>
+
       <TextInput
         style={styles.input}
         placeholder="Oyuncu Adı"
@@ -24,7 +31,7 @@ export default function RegisterScreen() {
             key={index}
             style={[
               styles.characterContainer,
-              selectedCharacter === character && styles.selectedCharacterContainer,
+              selectedCharacter === character && styles.selectedCharacter,
             ]}
             onPress={() => setSelectedCharacter(character)}
           >
@@ -35,6 +42,20 @@ export default function RegisterScreen() {
           </TouchableOpacity>
         ))}
       </View>
+
+      <TouchableOpacity
+        style={[
+          styles.button,
+          !(playerName && selectedCharacter) && styles.buttonDisabled,
+        ]}
+        onPress={() => {
+          console.log('Oyuncu:', playerName, 'Karakter:', selectedCharacter);
+          // Yönlendirme burada yapılabilir: örnek => router.push('/tabs')
+        }}
+        disabled={!(playerName && selectedCharacter)}
+      >
+        <Text style={styles.buttonText}>Devam Et</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -43,53 +64,70 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    justifyContent: 'flex-start',
-    backgroundColor: '#e8f0fe',
-    paddingTop: 60,
+    backgroundColor: '#e6f0ff',
+    alignItems: 'center',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    marginTop: 20,
     textAlign: 'center',
-    color: '#333',
   },
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 10,
     padding: 12,
-    marginBottom: 30,
+    width: '90%',
+    marginBottom: 20,
     backgroundColor: '#fff',
+    fontSize: 16,
   },
   charactersContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
-    gap: 15,
+    marginBottom: 30,
   },
   characterContainer: {
-    width: 60,
-    height: 100,
-    borderWidth: 1,
-    borderColor: '#ddd',
+    backgroundColor: '#fff',
+    padding: 10,
     borderRadius: 30,
     alignItems: 'center',
+    margin: 10,
+    width: 60,
+    height: 80,
     justifyContent: 'center',
-    backgroundColor: '#fff',
-    margin: 5,
+    elevation: 2,
   },
-  selectedCharacterContainer: {
-    borderColor: '#4CAF50',
+  selectedCharacter: {
     borderWidth: 2,
+    borderColor: '#007AFF',
   },
   character: {
-    fontSize: 30,
+    fontSize: 28,
+    textAlign: 'center',
   },
   selectedLabel: {
     fontSize: 12,
-    color: '#4CAF50',
+    color: '#007AFF',
     marginTop: 5,
+  },
+  button: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
     fontWeight: 'bold',
+  },
+  buttonDisabled: {
+    backgroundColor: '#ccc',
   },
 });
