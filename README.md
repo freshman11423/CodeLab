@@ -14,7 +14,7 @@ CodeLab, kullanıcıların Türkiye illeri hakkında bilgi yarışmasına katıl
 - Expo Router
 - TypeScript
 - Firebase (Authentication ve Database)
-- Redux / Zustand (State Management)
+
 
 ---
 

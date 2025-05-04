@@ -1,10 +1,31 @@
 import React from 'react';
-import MapScreen from 'app/map/MapScreen';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import TurkeyMap from './src/components/TurkeyMap';
 
-export default function App() {
+const Stack = createNativeStackNavigator();
+
+const App = () => {
   return (
-    <div style={{ height: '100vh', width: '100%' }}>
-      <MapScreen />
-    </div>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen 
+          name="TurkeyMap" 
+          component={TurkeyMap}
+          options={{
+            title: 'Türkiye Haritası',
+            headerStyle: {
+              backgroundColor: '#f4511e',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+          }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
-} 
+};
+
+export default App;
