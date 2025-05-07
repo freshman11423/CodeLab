@@ -1,6 +1,8 @@
 import React from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, Button, StyleSheet } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
+import { Dimensions } from 'react-native';
+
 
 // SVG'den alınan TÜM path'ler
 const paths = [
@@ -170,7 +172,7 @@ const paths = [
 
 ];
 
-const TurkeyMap = () => {
+const TurkeyMap = ({ navigation }) => {
   const { width } = Dimensions.get('window');
   const height = width * 0.422; // SVG aspect ratio
 
@@ -181,6 +183,19 @@ const TurkeyMap = () => {
           <Path key={i} d={d} fill="#6f9c76" stroke="#fff" strokeWidth={0.5} />
         ))}
       </Svg>
+      {/* HARİTANIN ALTINA EKLİYORUZ */}
+      <Button
+        title="Giriş Yap"
+        onPress={() => navigation.navigate('Login')}
+      />
+      <Button
+        title="Profil"
+        onPress={() => navigation.navigate('Profile')}
+      />
+       <Button
+  title="Kayıt Ol"
+  onPress={() => navigation.navigate('Register')}
+/>
     </View>
   );
 };
@@ -188,7 +203,9 @@ const TurkeyMap = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
-export default TurkeyMap; 
+export default TurkeyMap;

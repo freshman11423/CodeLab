@@ -1,13 +1,10 @@
-import { useEffect } from 'react';
-import { useRouter } from 'expo-router';
+import React from 'react';
+import { View, Text } from 'react-native';
 
-export default function LoginScreen() {
-  const router = useRouter();
-
-  useEffect(() => {
-    // Sayfa açılır açılmaz harita ekranına yönlendir
-    router.replace('/map');
-  }, []);
-
-  return null; // Bu ekranda görünür içerik olmayacak
+export default function Login() {
+  return (
+    <View>
+      <Text>Giriş Sayfası</Text>
+    </View>
+  );
 }

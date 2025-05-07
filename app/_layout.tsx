@@ -29,10 +29,14 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
+<Stack>
+  <Stack.Screen name="index" options={{ title: 'Ana Sayfa' }} />
+  <Stack.Screen name="login" options={{ title: 'Giriş Yap' }} />
+  <Stack.Screen name="register" options={{ title: 'Kayıt Ol' }} />
+  <Stack.Screen name="profile" options={{ title: 'Profil' }} />
+  <Stack.Screen name="*not-found" />
+</Stack>
+
       <StatusBar style="auto" />
     </ThemeProvider>
   );
