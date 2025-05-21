@@ -7,7 +7,7 @@ import {
   StyleSheet,
 } from 'react-native';
 
-export default function RegisterScreen() {
+export default function Register({ navigation }: { navigation: any }) {
   const [playerName, setPlayerName] = useState('');
   const [selectedCharacter, setSelectedCharacter] = useState('');
 
@@ -50,7 +50,7 @@ export default function RegisterScreen() {
         ]}
         onPress={() => {
           console.log('Oyuncu:', playerName, 'Karakter:', selectedCharacter);
-          // Yönlendirme burada yapılabilir: örnek => router.push('/tabs')
+          navigation.navigate('TurkeyMap');// Yönlendirme burada yapılabilir: örnek => router.push('/tabs')
         }}
         disabled={!(playerName && selectedCharacter)}
       >

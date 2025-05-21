@@ -1,10 +1,9 @@
 import React from 'react';
 import { Text, TouchableOpacity, StyleSheet, View } from 'react-native';
-import { useRouter } from 'expo-router';
 import BackgroundLayout from '../components/BackgroundLayout';
 
-export default function HomeScreen() {
-  const router = useRouter();
+
+export default function Home({ navigation }: { navigation: any }) {
 
   return (
     <BackgroundLayout>
@@ -12,11 +11,11 @@ export default function HomeScreen() {
         <Text style={styles.title}>FETİH</Text>
         <Text style={styles.subtitle}>Savaş meydanı artık bilgiyle kuruluyor</Text>
 
-        <TouchableOpacity style={styles.button} onPress={() => router.push('/register')}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Register')}>
           <Text style={styles.buttonText}>GİRİŞ</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button} onPress={() => router.push('/how-to-play')}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('HowToPlay')}>
           <Text style={styles.buttonText}>OYUN HAKKINDA</Text>
         </TouchableOpacity>
       </View>

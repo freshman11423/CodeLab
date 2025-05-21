@@ -47,4 +47,4 @@ Belirlenen hedefler:
 ## 🔁 Devredenler
 - **Profile & Index Sayfaları**: Şu an için boş durumda, sonraki sprintte işlevsel hale getirilecek.
 - **Harita üzerine şehir bazlı etkileşimler**: Sprint 2 için planlandı.
-➡ [Sprint 1 Raporu için tıklayın](./docs/sprint1-raporu.md)
+
