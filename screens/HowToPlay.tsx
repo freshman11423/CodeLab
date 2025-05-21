@@ -1,8 +1,8 @@
 import { View, Text, StyleSheet, Button } from 'react-native';
-import { useRouter } from 'expo-router';
 
-export default function HowToPlay() {
-  const router = useRouter();
+
+export default function HowToPlay({ navigation }: { navigation: any }) {
+  
 
   return (
     <View style={styles.container}>
@@ -11,7 +11,7 @@ export default function HowToPlay() {
         Bu oyun, Türkiye'nin 81 ilini bilgi yarışmasıyla fethetmeni sağlar.
         Doğru cevaplarla şehirleri fethedersin ve harita üzerinde ilerlersin!
       </Text>
-      <Button title="Geri Dön" onPress={() => router.back()} />
+      <Button title="Geri Dön" onPress={() => navigation.goBack()} />
     </View>
   );
 }

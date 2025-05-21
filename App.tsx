@@ -4,10 +4,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 // Sayfaları içe aktar
 import TurkeyMap from './src/components/TurkeyMap';
-import Login from './app/login';
-import Register from './app/register';
-import Profile from './app/profile';
-import Home from './app/index';
+import Login from './screens/Login';
+import Register from './screens/Register';
+import Profile from './screens/Profile';
+import Home from './screens/Home';
+import HowToPlay from './screens/HowToPlay';
 
 const Stack = createNativeStackNavigator();
 
@@ -24,7 +25,7 @@ const App = () => {
           name="TurkeyMap"
           component={TurkeyMap}
           options={{
-            title: 'Türkiye Haritası',
+            title: 'Şehrini Seç',
             headerStyle: { backgroundColor: '#f4511e' },
             headerTintColor: '#fff',
             headerTitleStyle: { fontWeight: 'bold' },
@@ -33,7 +34,7 @@ const App = () => {
         <Stack.Screen
           name="Login"
           component={Login}
-          options={{ title: 'Giriş Yap' }}
+          options={{ title: 'Devam Et' }}
         />
         <Stack.Screen
           name="Register"
@@ -41,9 +42,9 @@ const App = () => {
           options={{ title: 'Kayıt Ol' }}
         />
         <Stack.Screen
-          name="Profile"
-          component={Profile}
-          options={{ title: 'Profil' }}
+          name="HowToPlay"
+          component={HowToPlay}
+          options={{ title: 'Oyun Hakkında' }}
         />
       </Stack.Navigator>
     </NavigationContainer>
