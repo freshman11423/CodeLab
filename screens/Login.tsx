@@ -5,6 +5,9 @@ import { cityData } from '../components/data/cityData';
 export default function Login() {
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(1215); // 20 minutes and 15 seconds
+  const [isGameOver, setIsGameOver] = useState(false);
+  const [isGameStarted, setIsGameStarted] = useState(false);
   // Her şehir için cevapları ve tamamlanma durumunu tutan state
   const [cityAnswers, setCityAnswers] = useState<{ [city: string]: { answers: (string | null)[], completed: boolean } }>(() => {
     const initial: { [city: string]: { answers: (string | null)[], completed: boolean } } = {};
@@ -31,12 +34,37 @@ export default function Login() {
     });
   }, [cityData]);
 
+  // Timer effect - runs continuously once game starts
   useEffect(() => {
-    setCurrentQuestionIndex(0);
-  }, [selectedCity]);
+    let timer: NodeJS.Timeout;
+    if (isGameStarted && !isGameOver && timeLeft > 0) {
+      timer = setInterval(() => {
+        setTimeLeft(prev => {
+          if (prev <= 1) {
+            setIsGameOver(true);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [isGameStarted, isGameOver]);
+
+  // Format time display
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
 
   const handleCitySelect = (city: string) => {
     setSelectedCity(city);
+    if (!isGameStarted) {
+      setIsGameStarted(true);
+    }
   };
 
   const handleAnswerSelect = (answer: string) => {
@@ -68,6 +96,7 @@ export default function Login() {
   const handleBackToCities = () => {
     setSelectedCity(null);
     setCurrentQuestionIndex(0);
+    setIsGameOver(false);
   };
   
   // Şehirler ekranı
@@ -186,6 +215,61 @@ export default function Login() {
           <TouchableOpacity style={styles.nextButton} onPress={handleBackToCities}>
             <Text style={styles.nextButtonText}>Şehirlere Dön</Text>
           </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
+
+  // Add timer display to the UI where questions are shown
+  if (selectedCity && !completed) {
+    return (
+      <View style={styles.background}>
+        <View style={styles.container}>
+          <Text style={styles.timerText}>Kalan Süre: {formatTime(timeLeft)}</Text>
+          {isGameOver ? (
+            <View style={styles.gameOverContainer}>
+              <Text style={styles.gameOverText}>Süre Doldu!</Text>
+              <TouchableOpacity style={styles.nextButton} onPress={handleBackToCities}>
+                <Text style={styles.nextButtonText}>Şehirlere Dön</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <>
+              <Text style={styles.question}>{currentQuestion.questionText}</Text>
+              <View style={styles.answersContainer}>
+                {currentQuestion.options.map((answer, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={[
+                      styles.answer,
+                      selectedAnswer && {
+                        backgroundColor:
+                          answer === currentQuestion.correctAnswer
+                            ? '#bfa76f'
+                            : selectedAnswer === answer
+                              ? '#c97a6d'
+                              : '#f5ecd7',
+                      },
+                    ]}
+                    onPress={() => handleAnswerSelect(answer)}
+                    disabled={selectedAnswer !== null || isGameOver}
+                  >
+                    <Text style={styles.answerText}>{answer}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+              {selectedAnswer && (
+                <TouchableOpacity
+                  style={styles.nextButton}
+                  onPress={isLastQuestion ? handleBackToCities : handleNextQuestion}
+                >
+                  <Text style={styles.nextButtonText}>
+                    {isLastQuestion ? 'Şehirlere Dön' : 'Sonraki Soru'}
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </>
+          )}
         </View>
       </View>
     );
@@ -333,5 +417,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     letterSpacing: 1,
+  },
+  timerText: {
+    fontSize: 20,
+    color: '#7c5c29',
+    fontWeight: 'bold',
+    marginBottom: 15,
+  },
+  gameOverContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+  },
+  gameOverText: {
+    fontSize: 24,
+    color: '#c62828',
+    fontWeight: 'bold',
+    marginBottom: 20,
   },
 });
