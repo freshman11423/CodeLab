@@ -1,10 +1,10 @@
-interface Question {
+export interface Question {
   questionText: string;
   options: string[];
   correctAnswer: string;
 }
 
-interface City {
+export interface City {
   cityName: string;
   questions: Question[];
 }
