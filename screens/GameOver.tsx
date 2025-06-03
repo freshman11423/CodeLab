@@ -10,7 +10,7 @@ export default function GameOver() {
   const navigation = useNavigation<GameOverScreenNavigationProp>();
   const route = useRoute();
   const finalScore = route.params?.score || 0;
-  const isSuccessful = finalScore >= 1000;
+  const isSuccessful = finalScore >= 500;
 
   return (
     <View style={styles.background}>
@@ -20,7 +20,7 @@ export default function GameOver() {
           {isSuccessful ? 'Tebrikler! Fetih başarıyla tamamlandı!' : 'Fetih başarısız oldu!'}
         </Text>
         <Text style={styles.scoreText}>Toplam Puanınız: {finalScore}</Text>
-        <Text style={styles.infoText}>Bilgi: 1000 puan ve üstünde yaparsanız fetih başarılı olur.</Text>
+        <Text style={styles.infoText}>Bilgi: 500 puan ve üstünde yaparsanız fetih başarılı olur.</Text>
         <TouchableOpacity 
           style={styles.button}
           onPress={() => navigation.navigate('Home')}
