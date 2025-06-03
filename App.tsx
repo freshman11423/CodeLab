@@ -10,6 +10,7 @@ import Profile from './screens/Profile';
 import Home from './screens/Home';
 import HowToPlay from './screens/HowToPlay';
 import SoundService from './services/SoundService';
+import GameOver from './screens/GameOver';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,9 +29,9 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
-        name="Home"
-        component={Home}
-        options={{title:'Anasayfa'}}
+          name="Home"
+          component={Home}
+          options={{title:'Anasayfa'}}
         />
         <Stack.Screen
           name="TurkeyMap"
@@ -56,6 +57,11 @@ const App = () => {
           name="HowToPlay"
           component={HowToPlay}
           options={{ title: 'Oyun Hakkında' }}
+        />
+        <Stack.Screen
+          name="GameOver"
+          component={GameOver}
+          options={{ title: 'Oyun Bitti' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

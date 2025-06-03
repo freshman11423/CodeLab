@@ -2,18 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { ImageBackground, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 
 import BackgroundLayout from '../components/BackgroundLayout';
-import SoundService from '../services/SoundService';
+
 
 export default function Home({ navigation }: { navigation: any }) {
-  const soundService = SoundService.getInstance();
-
-  useEffect(() => {
-    soundService.playBackgroundMusic();
-
-    return () => {
-      soundService.stopBackgroundMusic();
-    };
-  }, []);
 
   return (
     <BackgroundLayout>
@@ -51,6 +42,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 16,
     gap: 16,
+  },
+  title: {
+    fontSize: 54,
+    fontWeight: '900',
+    color: '#4b2e1a', // koyu kahve
+    marginBottom: 10,
+    textAlign: 'center',
+    textShadowColor: 'rgba(0, 0, 0, 0.4)',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 4,
+    letterSpacing: 2,
+    textTransform: 'uppercase',
+  },
+  
+  subtitle: {
+    fontSize: 18,
+    fontStyle: 'italic',
+    color: '#3a2b1a',
+    marginBottom: 30,
+    textAlign: 'center',
   },
   button: {
     backgroundColor: '#7b4f2c',
