@@ -8,6 +8,7 @@ export default function Login() {
   const [timeLeft, setTimeLeft] = useState(1215); // 20 minutes and 15 seconds
   const [isGameOver, setIsGameOver] = useState(false);
   const [isGameStarted, setIsGameStarted] = useState(false);
+  const [score, setScore] = useState(0); // Add score state
   // Her şehir için cevapları ve tamamlanma durumunu tutan state
   const [cityAnswers, setCityAnswers] = useState<{ [city: string]: { answers: (string | null)[], completed: boolean } }>(() => {
     const initial: { [city: string]: { answers: (string | null)[], completed: boolean } } = {};
@@ -82,6 +83,13 @@ export default function Login() {
       updated[selectedCity] = { answers, completed };
       return updated;
     });
+
+    // Update score based on correct/incorrect answer
+    if (answer === cityEntry.questions[currentQuestionIndex].correctAnswer) {
+      setScore(prev => prev + 10);
+    } else {
+      setScore(prev => prev - 5); // Allow negative scores
+    }
   };
 
   const handleNextQuestion = () => {
@@ -142,6 +150,9 @@ export default function Login() {
     return (
       <View style={styles.background}>
         <View style={styles.container}>
+          <View style={styles.scoreContainer}>
+            <Text style={styles.scoreText}>Puan: {score}</Text>
+          </View>
           <Text style={styles.title}>Lütfen bir şehir seçin:</Text>
           <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent} showsVerticalScrollIndicator={true}>
             {cityData.map((city) => (
@@ -183,6 +194,9 @@ export default function Login() {
     return (
       <View style={styles.background}>
         <View style={styles.container}>
+          <View style={styles.scoreContainer}>
+            <Text style={styles.scoreText}>Puan: {score}</Text>
+          </View>
           <Text style={styles.title}>{selectedCity} - Tüm Soruların Cevapları</Text>
           <ScrollView style={{ width: '100%' }} contentContainerStyle={{ alignItems: 'center' }}>
             {cityEntry.questions.map((q, idx) => (
@@ -220,11 +234,14 @@ export default function Login() {
     );
   }
 
-  // Add timer display to the UI where questions are shown
+  // Add score display to the question screen
   if (selectedCity && !completed) {
     return (
       <View style={styles.background}>
         <View style={styles.container}>
+          <View style={styles.scoreContainer}>
+            <Text style={styles.scoreText}>Puan: {score}</Text>
+          </View>
           <Text style={styles.timerText}>Kalan Süre: {formatTime(timeLeft)}</Text>
           {isGameOver ? (
             <View style={styles.gameOverContainer}>
@@ -258,16 +275,15 @@ export default function Login() {
                   </TouchableOpacity>
                 ))}
               </View>
-              {selectedAnswer && (
-                <TouchableOpacity
-                  style={styles.nextButton}
-                  onPress={isLastQuestion ? handleBackToCities : handleNextQuestion}
-                >
-                  <Text style={styles.nextButtonText}>
-                    {isLastQuestion ? 'Şehirlere Dön' : 'Sonraki Soru'}
-                  </Text>
-                </TouchableOpacity>
-              )}
+              
+              <TouchableOpacity
+                style={styles.nextButton}
+                onPress={isLastQuestion ? handleBackToCities : handleNextQuestion}
+              >
+                <Text style={styles.nextButtonText}>
+                  {isLastQuestion ? 'Şehirlere Dön' : 'Sonraki Soru'}
+                </Text>
+              </TouchableOpacity>
             </>
           )}
         </View>
@@ -434,5 +450,23 @@ const styles = StyleSheet.create({
     color: '#c62828',
     fontWeight: 'bold',
     marginBottom: 20,
+  },
+  scoreContainer: {
+    position: 'absolute',
+    top: 20,
+    left: 20,
+    backgroundColor: '#bfa76f',
+    padding: 10,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  scoreText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
   },
 });
