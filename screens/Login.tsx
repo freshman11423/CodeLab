@@ -11,7 +11,7 @@ export default function Login() {
   const navigation = useNavigation<LoginScreenNavigationProp>();
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(10); // 10 seconds per city
+  const [timeLeft, setTimeLeft] = useState(15); // 15 seconds per city
   const [isGameOver, setIsGameOver] = useState(false);
   const [isGameStarted, setIsGameStarted] = useState(false);
   const [score, setScore] = useState(0); // Eski haline döndürüldü
@@ -86,9 +86,9 @@ export default function Login() {
 
   const handleCitySelect = (city: string) => {
     setSelectedCity(city);
-    setTimeLeft(10); // Yeni şehir için süreyi sıfırla
+    setTimeLeft(15); // Reset timer for new city
     setIsGameOver(false);
-    setCurrentQuestionIndex(0); // Yeni şehir için soru indeksini sıfırla
+    setCurrentQuestionIndex(0); // Reset question index for new city
     if (!isGameStarted) {
       setIsGameStarted(true);
     }
