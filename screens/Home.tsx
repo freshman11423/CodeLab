@@ -2,9 +2,7 @@ import React from 'react';
 import { Text, TouchableOpacity, StyleSheet, View } from 'react-native';
 import BackgroundLayout from '../components/BackgroundLayout';
 
-
 export default function Home({ navigation }: { navigation: any }) {
-
   return (
     <BackgroundLayout>
       <View style={styles.container}>
@@ -22,7 +20,6 @@ export default function Home({ navigation }: { navigation: any }) {
     </BackgroundLayout>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -45,7 +42,6 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
     textTransform: 'uppercase',
   },
-  
   subtitle: {
     fontSize: 18,
     fontStyle: 'italic',
