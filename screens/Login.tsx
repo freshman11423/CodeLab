@@ -92,7 +92,7 @@ export default function Login() {
 
     // Update score based on correct/incorrect answer
     if (answer === cityEntry.questions[currentQuestionIndex].correctAnswer) {
-      setScore(prev => prev + 10);
+      setScore(prev => prev + 20);
     } else {
       setScore(prev => prev - 5); // Allow negative scores
     }
