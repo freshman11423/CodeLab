@@ -105,7 +105,7 @@ export default function Login() {
       const updated = { ...prev };
       const answers = [...updated[selectedCity].answers];
       answers[currentQuestionIndex] = answer;
-      // Tüm sorular cevaplandıysa, şehri tamamla (puan hesaplama kaldırıldı)
+      // Tüm sorular cevaplandıysa, şehri tamamla
       const completed = answers.every(a => a !== null);
       if (completed) {
         handleCityComplete(selectedCity);
@@ -114,8 +114,12 @@ export default function Login() {
       return updated;
     });
 
-    // Cevap seçildiğinde otomatik sonraki soruya geçiş (isteğe bağlı)
-    // handleNextQuestion();
+    // Puanı güncelle
+    if (answer === cityEntry.questions[currentQuestionIndex].correctAnswer) {
+      setScore(prev => prev + 20);
+    } else {
+      setScore(prev => prev - 5);
+    }
   };
 
   const handleNextQuestion = () => {
@@ -283,23 +287,11 @@ export default function Login() {
 
   // Şehir ekranı (sorular cevaplanırken - Şehir Score burada gösterilir)
   if (selectedCity && !completed) {
-    // Şehir için o ana kadar biriken puanı hesapla
-    let currentCityRunningScore = 0;
-    cityAnswers[selectedCity].answers.forEach((answer, index) => {
-        const question = cityEntry.questions[index];
-        if (answer !== null && question) {
-            if (answer === question.correctAnswer) {
-                currentCityRunningScore += 20;
-            } else {
-                currentCityRunningScore -= 5;
-            }
-        }
-    });
     return (
       <View style={styles.background}>
         <View style={styles.container}>
           <View style={styles.scoreContainer}>
-            <Text style={styles.scoreText}>Şehir Score: {currentCityRunningScore}</Text>
+            <Text style={styles.scoreText}>Puan: {score}</Text>
           </View>
           <View style={styles.timerContainer}>
             <Text style={[styles.timerText, timeLeft <= 3 ? styles.timerWarning : null]}>
