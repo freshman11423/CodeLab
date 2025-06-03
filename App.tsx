@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -9,10 +9,21 @@ import Register from './screens/Register';
 import Profile from './screens/Profile';
 import Home from './screens/Home';
 import HowToPlay from './screens/HowToPlay';
+import SoundService from './services/SoundService';
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
+  useEffect(() => {
+    const soundService = SoundService.getInstance();
+    soundService.loadSounds();
+
+    // Optional: Add cleanup to unload sounds when the app unmounts
+    // return () => {
+    //   soundService.unloadSounds();
+    // };
+  }, []); // Empty dependency array ensures this runs only once on mount
+
   return (
     <NavigationContainer>
       <Stack.Navigator>

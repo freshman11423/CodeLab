@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "codelab",
-    "slug": "codelab",
+    "name": "Fetih",
+    "slug": "fetih",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
@@ -13,11 +13,19 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#ffffff"
-      }
+        "foregroundImage": "./assets/images/app-icon.png",
+        "backgroundColor": "#4b2e1a"
+      },
+      "package": "com.fetih.app",
+      "versionCode": 1
     },
     "web": {
       "bundler": "metro"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "11a6befb-6f87-45d5-b47c-8c4aaad1de28"
+      }
     }
   }
-} 
+}

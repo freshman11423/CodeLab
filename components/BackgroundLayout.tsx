@@ -1,12 +1,13 @@
 import React from 'react';
 import { ImageBackground, StyleSheet, View } from 'react-native';
-import backgroundImage from '../assets/pexels-pixabay-235985.jpg';
 
 type BackgroundLayoutProps = {
   children: React.ReactNode;
 };
 
-export default function BackgroundLayout({ children }: BackgroundLayoutProps) {
+const backgroundImage = require('../assets/fetih-clean.png');
+
+export default function BackgroundLayout({ children }: { children: React.ReactNode }) {
   return (
     <ImageBackground
       source={backgroundImage}

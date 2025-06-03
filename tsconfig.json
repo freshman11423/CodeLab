@@ -4,9 +4,10 @@
     "strict": true,
     "baseUrl": ".",
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "jsx": "react-native",
     "paths": {
+      "@/*": ["./*"],
       "app/*": ["./app/*"]
     }
   },
