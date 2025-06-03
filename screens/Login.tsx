@@ -159,17 +159,8 @@ export default function Login() {
           <TouchableOpacity 
             style={styles.endGameButton}
             onPress={() => {
-              // Oyunu bitir ve ana sayfaya dön
-              setScore(0);
-              setCityAnswers(() => {
-                const initial: typeof cityAnswers = {};
-                cityData.forEach(city => {
-                  initial[city.cityName] = { answers: Array(city.questions.length).fill(null), completed: false };
-                });
-                return initial;
-              });
-              // Ana sayfaya dön
-              navigation.navigate('Home');
+              // Oyunu bitir ve GameOver sayfasına git
+              navigation.navigate('GameOver', { score });
             }}
           >
             <Text style={styles.endGameButtonText}>Oyunu Bitir</Text>
