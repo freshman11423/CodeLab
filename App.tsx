@@ -17,9 +17,9 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
-        name="Home"
-        component={Home}
-        options={{title:'Anasayfa'}}
+          name="Home"
+          component={Home}
+          options={{title:'Anasayfa'}}
         />
         <Stack.Screen
           name="TurkeyMap"

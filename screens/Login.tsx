@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../types';
 import { cityData } from '../components/data/cityData';
 
+type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
+
 export default function Login() {
+  const navigation = useNavigation<LoginScreenNavigationProp>();
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(1215); // 20 minutes and 15 seconds
@@ -144,15 +150,30 @@ export default function Login() {
       );
     }
   
-    console.log('cityData:', cityData);
-    console.log('cityAnswers:', cityAnswers);
-  
     return (
       <View style={styles.background}>
         <View style={styles.container}>
           <View style={styles.scoreContainer}>
             <Text style={styles.scoreText}>Puan: {score}</Text>
           </View>
+          <TouchableOpacity 
+            style={styles.endGameButton}
+            onPress={() => {
+              // Oyunu bitir ve ana sayfaya dön
+              setScore(0);
+              setCityAnswers(() => {
+                const initial: typeof cityAnswers = {};
+                cityData.forEach(city => {
+                  initial[city.cityName] = { answers: Array(city.questions.length).fill(null), completed: false };
+                });
+                return initial;
+              });
+              // Ana sayfaya dön
+              navigation.navigate('Home');
+            }}
+          >
+            <Text style={styles.endGameButtonText}>Oyunu Bitir</Text>
+          </TouchableOpacity>
           <Text style={styles.title}>Lütfen bir şehir seçin:</Text>
           <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent} showsVerticalScrollIndicator={true}>
             {cityData.map((city) => (
@@ -468,5 +489,23 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#fff',
+  },
+  endGameButton: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    backgroundColor: '#c62828', // Kırmızı ton
+    padding: 10,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  endGameButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
