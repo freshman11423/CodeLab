@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { ImageBackground, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 
 import BackgroundLayout from '../components/BackgroundLayout';
-
+import SoundService from '../services/SoundService';
 
 export default function Home({ navigation }: { navigation: any }) {
+  const soundService = SoundService.getInstance();
 
   return (
     <BackgroundLayout>
@@ -34,7 +35,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-end',
     paddingHorizontal: 20,
-    paddingBottom: 150,
+    paddingBottom: 50,
   },
   buttonRow: {
     flexDirection: 'row',

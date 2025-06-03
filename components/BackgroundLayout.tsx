@@ -5,7 +5,7 @@ type BackgroundLayoutProps = {
   children: React.ReactNode;
 };
 
-const backgroundImage = require('../assets/fetih-clean.png');
+const backgroundImage = require('../assets/images/image.png');
 
 export default function BackgroundLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -31,4 +31,4 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
   },
-});
+}); 
