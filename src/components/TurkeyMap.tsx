@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { ImageBackground,View, Text, Button, StyleSheet } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { Dimensions } from 'react-native';
+import BackgroundLayout from '@/components/BackgroundLayout';
 
 
 // SVG'den alınan TÜM path'ler
@@ -180,22 +181,15 @@ const TurkeyMap = ({ navigation }) => {
     <View style={styles.container}>
       <Svg width={width} height={height} viewBox="0 0 1000 422">
         {paths.map((d, i) => (
-          <Path key={i} d={d} fill="#6f9c76" stroke="#fff" strokeWidth={0.5} />
+          <Path key={i} d={d} fill="#d9b072" stroke="#fff" strokeWidth={0.5} />
         ))}
       </Svg>
       {/* HARİTANIN ALTINA EKLİYORUZ */}
       <Button
-        title="Giriş Yap"
+        title="Şehirlere Git"
         onPress={() => navigation.navigate('Login')}
+        color="#d9b072"
       />
-      <Button
-        title="Profil"
-        onPress={() => navigation.navigate('Profile')}
-      />
-       <Button
-  title="Kayıt Ol"
-  onPress={() => navigation.navigate('Register')}
-/>
     </View>
   );
 };
