@@ -18,6 +18,7 @@ const App = () => {
   useEffect(() => {
     const soundService = SoundService.getInstance();
     soundService.loadSounds();
+    soundService.playBackgroundMusic();
 
     // Optional: Add cleanup to unload sounds when the app unmounts
     // return () => {

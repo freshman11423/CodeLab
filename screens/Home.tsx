@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { ImageBackground, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { useRoute } from '@react-navigation/native';
-
 import BackgroundLayout from '../components/BackgroundLayout';
 import SoundService from '../services/SoundService';
+import MuteButton from '../components/MuteButton';
 
 export default function Home({ navigation }: { navigation: any }) {
   const soundService = SoundService.getInstance();
@@ -23,6 +23,7 @@ export default function Home({ navigation }: { navigation: any }) {
   return (
     <BackgroundLayout>
       <View style={styles.container}>
+        <MuteButton />
         <View style={styles.buttonRow}>
           <TouchableOpacity style={styles.button} onPress={() => {
             soundService.playSound('button');

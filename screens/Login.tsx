@@ -4,11 +4,14 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
 import { cityData } from '../components/data/cityData';
+import MuteButton from '../components/MuteButton';
+import SoundService from '../services/SoundService';
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
 export default function Login() {
   const navigation = useNavigation<LoginScreenNavigationProp>();
+  const soundService = SoundService.getInstance();
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(15); // 15 seconds per city
@@ -46,6 +49,7 @@ export default function Login() {
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (isGameStarted && !isGameOver && timeLeft > 0 && selectedCity) {
+      soundService.playTickTock();
       timer = setInterval(() => {
         setTimeLeft(prev => {
           if (prev <= 1) {
@@ -61,9 +65,12 @@ export default function Login() {
           return prev - 1;
         });
       }, 1000);
+    } else {
+      soundService.stopTickTock();
     }
     return () => {
       if (timer) clearInterval(timer);
+      soundService.stopTickTock();
     };
   }, [isGameStarted, isGameOver, selectedCity]);
 
@@ -114,11 +121,13 @@ export default function Login() {
       return updated;
     });
 
-    // Puanı güncelle
+    // Puanı güncelle ve ses efekti çal
     if (answer === cityEntry.questions[currentQuestionIndex].correctAnswer) {
       setScore(prev => prev + 20);
+      soundService.playSound('success');
     } else {
       setScore(prev => prev - 5);
+      soundService.playSound('error');
     }
   };
 
@@ -178,6 +187,7 @@ export default function Login() {
   
     return (
       <View style={styles.background}>
+        <MuteButton />
         <View style={styles.container}>
           <View style={styles.scoreContainer}>
             <Text style={styles.scoreText}>Puan: {score}</Text>
@@ -193,16 +203,36 @@ export default function Login() {
           </TouchableOpacity>
           <Text style={styles.title}>Lütfen bir şehir seçin:</Text>
           <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent} showsVerticalScrollIndicator={true}>
-            {cityData.map((city) => (
-              <TouchableOpacity
-                key={city.cityName}
-                style={styles.cityButton}
-                onPress={() => handleCitySelect(city.cityName)}>
-                <Text style={styles.cityButtonText}>
-                  {city.cityName} {cityAnswers[city.cityName]?.completed ? '⭐' : ''}
-                </Text>
-              </TouchableOpacity>
-            ))}
+            {cityData.map((city) => {
+              // Doğru cevap sayısını hesapla
+              const answers = cityAnswers[city.cityName]?.answers || [];
+              let correctCount = 0;
+              if (answers.length > 0) {
+                correctCount = city.questions.reduce((acc, q, idx) => {
+                  if (answers[idx] === q.correctAnswer) return acc + 1;
+                  return acc;
+                }, 0);
+              }
+              // Sembolü belirle
+              let symbol = '';
+              if (cityAnswers[city.cityName]?.completed) {
+                if (correctCount === 0) {
+                  symbol = '❌';
+                } else {
+                  symbol = '⭐'.repeat(correctCount);
+                }
+              }
+              return (
+                <TouchableOpacity
+                  key={city.cityName}
+                  style={styles.cityButton}
+                  onPress={() => handleCitySelect(city.cityName)}>
+                  <Text style={styles.cityButtonText}>
+                    {city.cityName} {symbol}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
           </ScrollView>
         </View>
       </View>
@@ -243,6 +273,7 @@ export default function Login() {
 
     return (
       <View style={styles.background}>
+        <MuteButton />
         <View style={styles.container}>
           <View style={styles.scoreContainer}>
             <Text style={styles.scoreText}>Şehir Score: {finalCityScore}</Text>
@@ -289,6 +320,7 @@ export default function Login() {
   if (selectedCity && !completed) {
     return (
       <View style={styles.background}>
+        <MuteButton />
         <View style={styles.container}>
           <View style={styles.scoreContainer}>
             <Text style={styles.scoreText}>Puan: {score}</Text>
