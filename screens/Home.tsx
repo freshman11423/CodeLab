@@ -1,11 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { ImageBackground, StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { useRoute } from '@react-navigation/native';
 
 import BackgroundLayout from '../components/BackgroundLayout';
 import SoundService from '../services/SoundService';
 
 export default function Home({ navigation }: { navigation: any }) {
   const soundService = SoundService.getInstance();
+  const route = useRoute();
+  const [playerName, setPlayerName] = useState('Misafir');
+  const [selectedCharacter, setSelectedCharacter] = useState('Kaşif');
+
+  // Register ekranından gelen parametreleri al
+  useEffect(() => {
+    if (route.params) {
+      const { playerName: newPlayerName, selectedCharacter: newSelectedCharacter } = route.params as any;
+      if (newPlayerName) setPlayerName(newPlayerName);
+      if (newSelectedCharacter) setSelectedCharacter(newSelectedCharacter);
+    }
+  }, [route.params]);
 
   return (
     <BackgroundLayout>
@@ -24,6 +37,18 @@ export default function Home({ navigation }: { navigation: any }) {
             <Text style={styles.buttonText}>OYUN HAKKINDA</Text>
           </TouchableOpacity>
         </View>
+        <TouchableOpacity 
+          style={[styles.button, styles.mapButton]} 
+          onPress={() => {
+            soundService.playSound('button');
+            navigation.navigate('TurkeyMap', {
+              playerName,
+              selectedCharacter
+            });
+          }}
+        >
+          <Text style={styles.buttonText}>TÜRKİYE HARİTASI</Text>
+        </TouchableOpacity>
       </View>
     </BackgroundLayout>
   );
@@ -75,6 +100,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 6,
     elevation: 5,
+  },
+  mapButton: {
+    marginTop: 16,
+    backgroundColor: '#8b5e3c',
   },
   buttonText: {
     color: '#fff8e1',

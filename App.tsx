@@ -37,7 +37,7 @@ const App = () => {
           name="TurkeyMap"
           component={TurkeyMap}
           options={{
-            title: 'Şehrini Git',
+            title: 'Şehrine Git',
             headerStyle: { backgroundColor: '#d9b072' },
             headerTintColor: '#fff',
             headerTitleStyle: { fontWeight: 'bold' },

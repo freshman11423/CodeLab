@@ -45,13 +45,17 @@ export default function Register({ navigation }: { navigation: any }) {
   };
 
   const handleContinue = () => {
-    if (playerName && selectedCharacter) {
-      soundService.playSound('success');
-      console.log('Oyuncu:', playerName, 'Karakter:', selectedCharacter);
-      navigation.navigate('TurkeyMap');
-    } else {
-      soundService.playSound('error');
-    }
+    soundService.playSound('success');
+    // Önce Home ekranına dön ve parametreleri ilet
+    navigation.navigate('Home', {
+      playerName: playerName || 'Misafir',
+      selectedCharacter: selectedCharacter || 'Kaşif'
+    });
+    // Sonra TurkeyMap ekranına git
+    navigation.navigate('TurkeyMap', {
+      playerName: playerName || 'Misafir',
+      selectedCharacter: selectedCharacter || 'Kaşif'
+    });
   };
 
   return (
@@ -93,12 +97,8 @@ export default function Register({ navigation }: { navigation: any }) {
           </View>
 
           <TouchableOpacity
-            style={[
-              styles.button,
-              !(playerName && selectedCharacter) && styles.buttonDisabled,
-            ]}
+            style={styles.button}
             onPress={handleContinue}
-            disabled={!(playerName && selectedCharacter)}
           >
             <Text style={styles.buttonText}>Devam Et</Text>
           </TouchableOpacity>
@@ -227,9 +227,5 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     letterSpacing: 1,
     textAlign: 'center',
-  },
-  buttonDisabled: {
-    backgroundColor: '#4b2e1a',
-    opacity: 0.7,
   },
 });
