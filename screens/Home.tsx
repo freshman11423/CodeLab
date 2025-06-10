@@ -38,18 +38,6 @@ export default function Home({ navigation }: { navigation: any }) {
             <Text style={styles.buttonText}>OYUN HAKKINDA</Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity 
-          style={[styles.button, styles.mapButton]} 
-          onPress={() => {
-            soundService.playSound('button');
-            navigation.navigate('TurkeyMap', {
-              playerName,
-              selectedCharacter
-            });
-          }}
-        >
-          <Text style={styles.buttonText}>TÜRKİYE HARİTASI</Text>
-        </TouchableOpacity>
       </View>
     </BackgroundLayout>
   );
@@ -101,10 +89,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 6,
     elevation: 5,
-  },
-  mapButton: {
-    marginTop: 16,
-    backgroundColor: '#8b5e3c',
   },
   buttonText: {
     color: '#fff8e1',

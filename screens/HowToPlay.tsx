@@ -24,7 +24,7 @@ export default function HowToPlay({ navigation }: { navigation: any }) {
             Türkiye'nin 81 ili seni bekliyor! Her bir il bir kale,her soru bir meydan savaşı...
             Bir ili seç, karşına çıkan soruyu doğru bil ve şehri fethet.
             Bilginle ilerle, stratejinle yayıl,hedefin tüm ülkeyi egemenliğin altına almak!
-            FETİH YOLCULUĞUNA HAZIRMISIN!!
+            FETİH YOLCULUĞUNA HAZIR MISIN!!
             
           </Text>
           <TouchableOpacity style={styles.button} onPress={() => {

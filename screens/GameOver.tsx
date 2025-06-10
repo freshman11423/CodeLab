@@ -20,7 +20,7 @@ export default function GameOver() {
           {isSuccessful ? 'Tebrikler! Fetih başarıyla tamamlandı!' : 'Fetih başarısız oldu!'}
         </Text>
         <Text style={styles.scoreText}>Toplam Puanınız: {finalScore}</Text>
-        <Text style={styles.infoText}>Bilgi: 500 puan ve üstünde yaparsanız fetih başarılı olur.</Text>
+        <Text style={styles.infoText}>Bilgi: 300 puan ve üstünde yaparsanız fetih başarılı olur.</Text>
         <TouchableOpacity 
           style={styles.button}
           onPress={() => navigation.navigate('Home')}

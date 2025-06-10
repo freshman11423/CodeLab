@@ -193,7 +193,7 @@ export default function Login() {
             <Text style={styles.scoreText}>Puan: {score}</Text>
           </View>
           <TouchableOpacity 
-            style={styles.endGameButton}
+            style={[styles.endGameButton, { marginTop: 60 }]}
             onPress={() => {
               // Oyunu bitir ve GameOver sayfasına git
               navigation.navigate('GameOver', { score });
@@ -490,8 +490,11 @@ const styles = StyleSheet.create({
   },
   timerContainer: {
     position: 'absolute',
-    top: 20,
-    right: 20,
+    top: 30,
+    left: 0,
+    right: 0,
+    marginLeft: 'auto',
+    marginRight: 'auto',
     backgroundColor: '#bfa76f',
     padding: 15,
     borderRadius: 50,
@@ -544,9 +547,8 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   endGameButton: {
-    position: 'absolute',
-    top: 20,
-    right: 20,
+    marginTop: 60,
+    alignSelf: 'center',
     backgroundColor: '#c62828', // Kırmızı ton
     padding: 10,
     borderRadius: 8,
