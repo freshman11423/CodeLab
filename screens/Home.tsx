@@ -16,7 +16,7 @@ export default function Home({ navigation }: { navigation: any }) {
             navigation.navigate('Register');
           }}>
             <Text style={styles.buttonText}>GİRİŞ</Text>
-          </TouchableOpacity>
+           </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={() => {
             soundService.playSound('button');
             navigation.navigate('HowToPlay');
