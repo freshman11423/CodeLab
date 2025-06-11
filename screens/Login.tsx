@@ -4,17 +4,21 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../types';
 import { cityData } from '../components/data/cityData';
+import MuteButton from '../components/MuteButton';
+import SoundService from '../services/SoundService';
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
 export default function Login() {
   const navigation = useNavigation<LoginScreenNavigationProp>();
+  const soundService = SoundService.getInstance();
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(1215); // 20 minutes and 15 seconds
+  const [timeLeft, setTimeLeft] = useState(15); // 15 seconds per city
   const [isGameOver, setIsGameOver] = useState(false);
   const [isGameStarted, setIsGameStarted] = useState(false);
-  const [score, setScore] = useState(0); // Add score state
+  const [score, setScore] = useState(0); // Eski haline döndürüldü
+
   // Her şehir için cevapları ve tamamlanma durumunu tutan state
   const [cityAnswers, setCityAnswers] = useState<{ [city: string]: { answers: (string | null)[], completed: boolean } }>(() => {
     const initial: { [city: string]: { answers: (string | null)[], completed: boolean } } = {};
@@ -44,57 +48,86 @@ export default function Login() {
   // Timer effect - runs continuously once game starts
   useEffect(() => {
     let timer: NodeJS.Timeout;
-    if (isGameStarted && !isGameOver && timeLeft > 0) {
+    if (isGameStarted && !isGameOver && timeLeft > 0 && selectedCity) {
+      soundService.playTickTock();
       timer = setInterval(() => {
         setTimeLeft(prev => {
           if (prev <= 1) {
             setIsGameOver(true);
+            // Mark the city as completed when time runs out
+             setCityAnswers(prev => {
+              const updated = { ...prev };
+              updated[selectedCity] = { ...updated[selectedCity], completed: true };
+              return updated;
+            });
             return 0;
           }
           return prev - 1;
         });
       }, 1000);
+    } else {
+      soundService.stopTickTock();
     }
     return () => {
       if (timer) clearInterval(timer);
+      soundService.stopTickTock();
     };
-  }, [isGameStarted, isGameOver]);
+  }, [isGameStarted, isGameOver, selectedCity]);
 
-  // Format time display
+  // Format time display (Sadece saniye olarak göster)
   const formatTime = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+    return `${seconds}`;
+  };
+
+  // Şehir tamamlandığında sadece işaretle (puan hesaplama kaldırıldı)
+  const handleCityComplete = (city: string) => {
+    const cityAnswersState = cityAnswers[city];
+    if (!cityAnswersState || cityAnswersState.completed) return;
+
+    // Şehri tamamlandı olarak işaretle
+    setCityAnswers(prev => ({
+      ...prev,
+      [city]: { ...prev[city], completed: true }
+    }));
   };
 
   const handleCitySelect = (city: string) => {
     setSelectedCity(city);
+    setTimeLeft(15); // Reset timer for new city
+    setIsGameOver(false);
+    setCurrentQuestionIndex(0); // Reset question index for new city
     if (!isGameStarted) {
       setIsGameStarted(true);
     }
   };
 
   const handleAnswerSelect = (answer: string) => {
-    if (!selectedCity) return;
+    if (!selectedCity || isGameOver) return; // Süre bittiyse veya oyun bittiyse cevaplama
     const cityEntry = cityData.find(c => c.cityName === selectedCity);
     if (!cityEntry) return;
     // Eğer şehir tamamlandıysa cevap değişmesin
     if (cityAnswers[selectedCity].completed) return;
+
     setCityAnswers(prev => {
       const updated = { ...prev };
       const answers = [...updated[selectedCity].answers];
       answers[currentQuestionIndex] = answer;
-      // Tüm sorular cevaplandıysa completed=true
+      // Tüm sorular cevaplandıysa, şehri tamamla
       const completed = answers.every(a => a !== null);
+      if (completed) {
+        handleCityComplete(selectedCity);
+      }
       updated[selectedCity] = { answers, completed };
       return updated;
     });
 
-    // Update score based on correct/incorrect answer
+    // Puanı güncelle ve ses efekti çal
     if (answer === cityEntry.questions[currentQuestionIndex].correctAnswer) {
       setScore(prev => prev + 20);
+      soundService.playSound('success');
     } else {
-      setScore(prev => prev - 5); // Allow negative scores
+      setScore(prev => prev - 5);
+      soundService.playSound('error');
     }
   };
 
@@ -108,12 +141,14 @@ export default function Login() {
   };
 
   const handleBackToCities = () => {
+    // Şehirden çıkış
     setSelectedCity(null);
     setCurrentQuestionIndex(0);
     setIsGameOver(false);
+    // isGameStarted state'ini sıfırlamaya gerek yok, timer effect selectedCity null olunca durur.
   };
-  
-  // Şehirler ekranı
+
+  // Şehirler ekranı (Toplam score burada gösterilir)
   if (!selectedCity) {
     // Veri tamamen yüklenmediyse boş ekran vermemesi için kontrol
     if (!cityData || cityData.length === 0 || !cityAnswers) {
@@ -152,12 +187,13 @@ export default function Login() {
   
     return (
       <View style={styles.background}>
+        <MuteButton />
         <View style={styles.container}>
           <View style={styles.scoreContainer}>
             <Text style={styles.scoreText}>Puan: {score}</Text>
           </View>
           <TouchableOpacity 
-            style={styles.endGameButton}
+            style={[styles.endGameButton, { marginTop: 60 }]}
             onPress={() => {
               // Oyunu bitir ve GameOver sayfasına git
               navigation.navigate('GameOver', { score });
@@ -167,17 +203,36 @@ export default function Login() {
           </TouchableOpacity>
           <Text style={styles.title}>Lütfen bir şehir seçin:</Text>
           <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollViewContent} showsVerticalScrollIndicator={true}>
-            {cityData.map((city) => (
-              <TouchableOpacity
-                key={city.cityName}
-                style={styles.cityButton}
-                onPress={() => handleCitySelect(city.cityName)}
-              >
-                <Text style={styles.cityButtonText}>
-                  {city.cityName} {cityAnswers[city.cityName]?.completed ? '⭐' : ''}
-                </Text>
-              </TouchableOpacity>
-            ))}
+            {cityData.map((city) => {
+              // Doğru cevap sayısını hesapla
+              const answers = cityAnswers[city.cityName]?.answers || [];
+              let correctCount = 0;
+              if (answers.length > 0) {
+                correctCount = city.questions.reduce((acc, q, idx) => {
+                  if (answers[idx] === q.correctAnswer) return acc + 1;
+                  return acc;
+                }, 0);
+              }
+              // Sembolü belirle
+              let symbol = '';
+              if (cityAnswers[city.cityName]?.completed) {
+                if (correctCount === 0) {
+                  symbol = '❌';
+                } else {
+                  symbol = '⭐'.repeat(correctCount);
+                }
+              }
+              return (
+                <TouchableOpacity
+                  key={city.cityName}
+                  style={styles.cityButton}
+                  onPress={() => handleCitySelect(city.cityName)}>
+                  <Text style={styles.cityButtonText}>
+                    {city.cityName} {symbol}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
           </ScrollView>
         </View>
       </View>
@@ -203,11 +258,25 @@ export default function Login() {
 
   // Eğer şehir tamamlandıysa, sadece cevapları ve doğru/yanlışları göster, tıklanamaz olsun
   if (completed) {
+     // Şehir için son puanı hesapla (Bu ekranda göstermek için)
+    let finalCityScore = 0;
+     cityEntry.questions.forEach((q, index) => {
+        const answer = answers[index];
+        if (answer !== null) {
+            if (answer === q.correctAnswer) {
+                finalCityScore += 20;
+            } else {
+                finalCityScore -= 5;
+            }
+        }
+    });
+
     return (
       <View style={styles.background}>
+        <MuteButton />
         <View style={styles.container}>
           <View style={styles.scoreContainer}>
-            <Text style={styles.scoreText}>Puan: {score}</Text>
+            <Text style={styles.scoreText}>Şehir Score: {finalCityScore}</Text>
           </View>
           <Text style={styles.title}>{selectedCity} - Tüm Soruların Cevapları</Text>
           <ScrollView style={{ width: '100%' }} contentContainerStyle={{ alignItems: 'center' }}>
@@ -231,7 +300,8 @@ export default function Login() {
                   >
                     <Text style={styles.answerText}>{answer}</Text>
                   </View>
-                ))}
+                ))
+               }
                 <Text style={{ color: answers[idx] === q.correctAnswer ? '#388e3c' : '#c62828', fontWeight: 'bold', marginTop: 2 }}>
                   {answers[idx] === q.correctAnswer ? 'Doğru' : `Yanlış (Doğru: ${q.correctAnswer})`}
                 </Text>
@@ -246,15 +316,20 @@ export default function Login() {
     );
   }
 
-  // Add score display to the question screen
+  // Şehir ekranı (sorular cevaplanırken - Şehir Score burada gösterilir)
   if (selectedCity && !completed) {
     return (
       <View style={styles.background}>
+        <MuteButton />
         <View style={styles.container}>
           <View style={styles.scoreContainer}>
             <Text style={styles.scoreText}>Puan: {score}</Text>
           </View>
-          <Text style={styles.timerText}>Kalan Süre: {formatTime(timeLeft)}</Text>
+          <View style={styles.timerContainer}>
+            <Text style={[styles.timerText, timeLeft <= 3 ? styles.timerWarning : null]}>
+              {formatTime(timeLeft)}
+            </Text>
+          </View>
           {isGameOver ? (
             <View style={styles.gameOverContainer}>
               <Text style={styles.gameOverText}>Süre Doldu!</Text>
@@ -281,21 +356,24 @@ export default function Login() {
                       },
                     ]}
                     onPress={() => handleAnswerSelect(answer)}
-                    disabled={selectedAnswer !== null || isGameOver}
+                    disabled={selectedAnswer !== null || isGameOver} // Süre bitince veya cevap verilince tıklanamaz yap
                   >
                     <Text style={styles.answerText}>{answer}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
               
-              <TouchableOpacity
-                style={styles.nextButton}
-                onPress={isLastQuestion ? handleBackToCities : handleNextQuestion}
-              >
-                <Text style={styles.nextButtonText}>
-                  {isLastQuestion ? 'Şehirlere Dön' : 'Sonraki Soru'}
-                </Text>
-              </TouchableOpacity>
+              {/* Cevap seçildiyse veya süre bittiyse sonraki soru/şehirlere dön butonu göster */}
+              {(selectedAnswer !== null || isGameOver) && (
+                <TouchableOpacity
+                  style={styles.nextButton}
+                  onPress={isLastQuestion ? handleBackToCities : handleNextQuestion}
+                >
+                  <Text style={styles.nextButtonText}>
+                    {isLastQuestion ? 'Şehirlere Dön' : 'Sonraki Soru'}
+                  </Text>
+                </TouchableOpacity>
+              )}
             </>
           )}
         </View>
@@ -303,46 +381,10 @@ export default function Login() {
     );
   }
 
-  // Normal soru çözme ekranı
-  return (
-    <View style={styles.background}>
-      <View style={styles.container}>
-        <Text style={styles.question}>{currentQuestion.questionText}</Text>
-        <View style={styles.answersContainer}>
-          {currentQuestion.options.map((answer, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[
-                styles.answer,
-                selectedAnswer && {
-                  backgroundColor:
-                    answer === currentQuestion.correctAnswer
-                      ? '#bfa76f'
-                      : selectedAnswer === answer
-                        ? '#c97a6d'
-                        : '#f5ecd7',
-                },
-              ]}
-              onPress={() => handleAnswerSelect(answer)}
-              disabled={selectedAnswer !== null}
-            >
-              <Text style={styles.answerText}>{answer}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-        {selectedAnswer && (
-          <TouchableOpacity
-            style={styles.nextButton}
-            onPress={isLastQuestion ? handleBackToCities : handleNextQuestion}
-          >
-            <Text style={styles.nextButtonText}>
-              {isLastQuestion ? 'Şehirlere Dön' : 'Sonraki Soru'}
-            </Text>
-          </TouchableOpacity>
-        )}
-      </View>
-    </View>
-  );
+  // Bu return bloğu aslında selectedCity false olduğunda çalışır ve şehirler ekranını gösterir.
+  // Ancak yukarıdaki if (!selectedCity) bloğu zaten bunu kapsıyor.
+  // Kodun sonuna boş bir return bırakarak bu bloğu etkisiz hale getirelim.
+  return null;
 }
 
 const styles = StyleSheet.create({
@@ -446,11 +488,34 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     letterSpacing: 1,
   },
+  timerContainer: {
+    position: 'absolute',
+    top: 30,
+    left: 0,
+    right: 0,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    backgroundColor: '#bfa76f',
+    padding: 15,
+    borderRadius: 50,
+    width: 60,
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
   timerText: {
-    fontSize: 20,
-    color: '#7c5c29',
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 15,
+    color: '#fff',
+  },
+  timerWarning: {
+    color: '#c62828',
+    fontSize: 28,
   },
   gameOverContainer: {
     alignItems: 'center',
@@ -482,9 +547,8 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   endGameButton: {
-    position: 'absolute',
-    top: 20,
-    right: 20,
+    marginTop: 60,
+    alignSelf: 'center',
     backgroundColor: '#c62828', // Kırmızı ton
     padding: 10,
     borderRadius: 8,

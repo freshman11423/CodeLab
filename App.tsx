@@ -18,6 +18,7 @@ const App = () => {
   useEffect(() => {
     const soundService = SoundService.getInstance();
     soundService.loadSounds();
+    soundService.playBackgroundMusic();
 
     // Optional: Add cleanup to unload sounds when the app unmounts
     // return () => {
@@ -37,8 +38,8 @@ const App = () => {
           name="TurkeyMap"
           component={TurkeyMap}
           options={{
-            title: 'Şehrini Seç',
-            headerStyle: { backgroundColor: '#f4511e' },
+            title: 'Şehrine Git',
+            headerStyle: { backgroundColor: '#d9b072' },
             headerTintColor: '#fff',
             headerTitleStyle: { fontWeight: 'bold' },
           }}

@@ -1,7 +1,10 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { ImageBackground,View, Text, Button, StyleSheet } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { Dimensions } from 'react-native';
+import BackgroundLayout from '@/components/BackgroundLayout';
+
+const backgroundImage=require('../../assets/pexels-pixabay-235985.jpg');
 
 
 // SVG'den alınan TÜM path'ler
@@ -172,40 +175,47 @@ const paths = [
 
 ];
 
-const TurkeyMap = ({ navigation }) => {
+const TurkeyMap = ({ navigation,route }) => {
   const { width } = Dimensions.get('window');
   const height = width * 0.422; // SVG aspect ratio
+  const { playerName,selectedCharacter }= route?.params || {};
 
   return (
+    <ImageBackground source={backgroundImage} style={styles.background} resizeMode="cover">
     <View style={styles.container}>
+            {(playerName && selectedCharacter) && (
+        <Text style={{ fontSize: 22, fontWeight: 'bold', marginBottom: 20 }}>
+          {selectedCharacter}, {playerName} hoşgeldin!
+        </Text>
+      )}
       <Svg width={width} height={height} viewBox="0 0 1000 422">
         {paths.map((d, i) => (
-          <Path key={i} d={d} fill="#6f9c76" stroke="#fff" strokeWidth={0.5} />
+          <Path key={i} d={d} fill="#8B4513" stroke=  "#3a2412" strokeWidth={0.5} />
         ))}
       </Svg>
       {/* HARİTANIN ALTINA EKLİYORUZ */}
       <Button
-        title="Giriş Yap"
+        title="Şehirlere Git"
         onPress={() => navigation.navigate('Login')}
+        color="#d9b072"
       />
-      <Button
-        title="Profil"
-        onPress={() => navigation.navigate('Profile')}
-      />
-       <Button
-  title="Kayıt Ol"
-  onPress={() => navigation.navigate('Register')}
-/>
     </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
+    backgroundColor: 'transparent',
+    },
 });
 
 export default TurkeyMap;
